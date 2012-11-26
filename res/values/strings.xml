@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">Reiki Guidance</string>
+	<string name="welcome">Welcome to the Guidance Reiki app</string>
+	<string name="logo">Logo</string>
+	<string name="go">Get today\'s Guidance</string>
+	<string name="prev">View past Guidance</string>
+	<string name="today">Welcome here you will get today\'s notification</string>
+	
+</resources>
