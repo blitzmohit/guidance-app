@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -56,18 +58,29 @@ public class today extends Activity implements OnClickListener{
     tv1.setVisibility(0);
     tv1.append("Sometext");
     String readTwitterFeed = readTwitterFeed();
-    Log.i("deal.with.it",readTwitterFeed);
+    //Log.i("deal.with.it",readTwitterFeed);
     try {
       JSONObject jsonObject = new JSONObject(readTwitterFeed);
       JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
-      for (int i = 0; i < posts.length(); i++) {
-   // 	      final View row = createRow(posts.getJSONObject(i));
-      }
-      //Log.i("deal.with.it",posts.getString());
-     /*Log.i("deal.with.it","Number of entries "+jsonObject.length());
-      for (int i = 0; i < jsonObject.length(); i++) {
-        Log.i("deal.with.it",jsonObject.getString(jsoncat[i]));
-      }*/
+      //for (int i = 0; i < posts.length(); i++) {
+      	Log.i("deal.with.it","Starting posts to string");
+      	Calendar c = Calendar.getInstance();
+      	System.out.println("Current time => " + c.getTime());
+
+      	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+      	String formattedDate = df.format(c.getTime());
+        Log.i("deal.with.it",formattedDate);
+   	       //Log.i("deal.with.it",posts.toString(2));
+      	JSONObject x=posts.getJSONObject(2);
+      	String[] postdate=x.getString("date").split(" ");
+   	    if(postdate[0]==formattedDate)
+   	    {
+      	Log.i("deal.with.it","Todays post");
+   	    }
+   	    else
+   	    {
+   	    	Log.i("deal.with.it","Should I show some old posts");
+   	    }
     } catch (Exception e) {
       e.printStackTrace();
     }
