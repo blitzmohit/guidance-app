@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,31 +48,44 @@ public class today extends Activity implements OnClickListener{
 	public void onClick(View v){  
     Log.i("webtry","layout now trying");
     tv1.setVisibility(0);
-    tv1.append("Sometext");
+//    tv1.append("Sometext");
     String readTwitterFeed = readTwitterFeed();
     //Log.i("deal.with.it",readTwitterFeed);
     try {
       JSONObject jsonObject = new JSONObject(readTwitterFeed);
       JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
-      //for (int i = 0; i < posts.length(); i++) {
+//      for (int j = 0; j < posts.length(); j++) {
       	Log.i("deal.with.it","Starting posts to string");
       	Calendar c = Calendar.getInstance();
       	System.out.println("Current time => " + c.getTime());
 
       	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
       	String formattedDate = df.format(c.getTime());
-        Log.i("deal.with.it",formattedDate);
    	       //Log.i("deal.with.it",posts.toString(2));
-      	JSONObject x=posts.getJSONObject(2);
+      	JSONObject x=posts.getJSONObject(0);
+      	System.out.println(x);
       	String[] postdate=x.getString("date").split(" ");
-   	    if(postdate[0]==formattedDate)
+        Log.i("deal.with.it",formattedDate+" "+postdate[0]);
+      	Log.i("deal.with.it",x.getString("id"));
+   	    if(postdate[0].equals(formattedDate))
    	    {
       	Log.i("deal.with.it","Todays post");
+      	//tv1.append(x.getString("url"));
+      	String url=x.getString("url");
+      	Intent i = new Intent(Intent.ACTION_VIEW);
+      	i.setData(Uri.parse(url));
+      	startActivity(i);
    	    }
    	    else
    	    {
    	    	Log.i("deal.with.it","Should I show some old posts");
+//   	    	tv1.append(x.getString("content"));
+   	    	String url=x.getString("url");
+   	      	Intent i = new Intent(Intent.ACTION_VIEW);
+   	      	i.setData(Uri.parse(url));
+   	      	startActivity(i);
    	    }
+//      }
     } catch (Exception e) {
       e.printStackTrace();
     }
