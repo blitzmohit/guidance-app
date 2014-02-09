@@ -7,5 +7,6 @@
 	<string name="prev">Monthly Guidance</string>
 	<string name="today">Welcome here you will get today\'s notification</string>
 	<string name="personalied">Get Personalized Guidance</string>
+	<string name="NA">Today\'s Guidance has not been posted yet, kindly check out the monthly Guidance.</string>
 	
 </resources>

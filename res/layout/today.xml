@@ -36,7 +36,7 @@
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/today"
+        android:text="@string/NA"
         android:visibility="invisible" />
 
     <Button
@@ -65,6 +65,7 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:visibility="invisible"
         android:text="@string/prev" />
 
     <TextView
