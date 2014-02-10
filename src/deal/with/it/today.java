@@ -1,21 +1,10 @@
 package deal.with.it;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,18 +21,19 @@ public class today extends Activity implements OnClickListener{
 	private TextView tv1;
 	private Button bt1,bt2,bt3;
 	static String[] jsoncat={"status","count","count_total","pages","posts"};
-	private String feed[]=new String[3],date[]=new String[3],excerpt;
+	private String feed[]=new String[4],date[]=new String[4];
+	private int no;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    Bundle extras = getIntent().getExtras();
-    feed= extras.getStringArray("feed");
-    date= extras.getStringArray("date");
-    Log.i("deal.with.it","----");
-//    Log.i("deal.with.it",feed);
-//    Log.i("deal.with.it",date);
-    Log.i("deal.with.it","----");
-    initLayout();
+		super.onCreate(savedInstanceState);
+		Bundle extras = getIntent().getExtras();
+		feed= extras.getStringArray("feed");
+		date= extras.getStringArray("date");
+		Log.i("deal.with.it","----");
+		//    Log.i("deal.with.it",feed);
+		//    Log.i("deal.with.it",date);
+		Log.i("deal.with.it","----");
+		initLayout();
 	}
 	private void initLayout(){
 		setContentView(R.layout.today);
@@ -53,94 +43,62 @@ public class today extends Activity implements OnClickListener{
 		bt1.setOnClickListener((OnClickListener) this);	
 		bt2=(Button)findViewById(R.id.Button02);
 		bt3=(Button)findViewById(R.id.bt1);
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedDate = df.format(c.getTime());
+		bt1.setOnClickListener((OnClickListener) this);	
+		bt2.setOnClickListener((OnClickListener) this);	
+		bt3.setOnClickListener((OnClickListener) this);	
+		Calendar cal=Calendar.getInstance();
+		SimpleDateFormat month_date = new SimpleDateFormat("MMMM-dd",Locale.US);
+		String month= month_date.format(cal.getTime());
+		System.out.println(month);
+//		String formattedDate="abc";
 		for(int i=0;i<4;i++){
 
-			if(date[i].equals(formattedDate))
+			if(Pattern.compile(Pattern.quote(month.split("-")[0]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find() && Pattern.compile(Pattern.quote(month.split("-")[1]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find())
 			{
 				Log.i("deal.with.it","date was equal");
-				excerpt=feed[i];
-				bt1.setVisibility(0);
-				Log.i("deal.with.it",excerpt);
+				//				excerpt=feed[i];
+				no=i;
+				bt2.setVisibility(0);
+				Log.i("deal.with.it",feed[i]);
 				break;
 			}
 			else
 			{
 				Log.i("deal.with.it","date was not equal");
-//				bt1.setVisibility(4);
+				//				bt1.setVisibility(4);
 				tv1.setVisibility(0);
 			}
 		}
 	}
 	@Override
 	public void onClick(View v){  
-    Log.i("webtry","layout now trying");
-//    tv1.setVisibility(0);
-    String readTwitterFeed = readTwitterFeed();
-    try {
-      JSONObject jsonObject = new JSONObject(readTwitterFeed);
-      JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
-      	Log.i("deal.with.it","Starting posts to string");
-      	Calendar c = Calendar.getInstance();
-      	System.out.println("Current time => " + c.getTime());
-
-      	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-      	String formattedDate = df.format(c.getTime());
-      	JSONObject x=posts.getJSONObject(0);
-      	System.out.println(x.getString("excerpt").split("<div class=\"sharedaddy")[0].split("</div><br/><p>")[1]);
-      	String[] postdate=x.getString("date").split(" ");
-        Log.i("deal.with.it",formattedDate+" "+postdate[0]);
-      	Log.i("deal.with.it",x.getString("id"));
-   	    if(postdate[0].equals(formattedDate))
-   	    {
-      	Log.i("deal.with.it","Todays post");
-      	String url=x.getString("url");
-      	Intent i = new Intent(Intent.ACTION_VIEW);
-      	i.setData(Uri.parse(url));
-      	startActivity(i);
-   	    }
-   	    else
-   	    {
-   	    	Log.i("deal.with.it","Should I show some old posts");
-   	    	String url=x.getString("url");
-   	      	Intent i = new Intent(Intent.ACTION_VIEW);
-   	      	i.setData(Uri.parse(url));
-   	      	startActivity(i);
-   	    }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-	
-	private String readTwitterFeed() {
-		StringBuilder builder = new StringBuilder();
-	    HttpClient client = new DefaultHttpClient();
-	    Log.i("deal.with.it","Read twitter feed");
-	    HttpGet httpGet = new HttpGet("http://lotusmeditationgroup.com/?cat=4&json=1");
-	    try {
-	      HttpResponse response = client.execute(httpGet);
-	      StatusLine statusLine = response.getStatusLine();
-	      int statusCode = statusLine.getStatusCode();
-	      if (statusCode == 200) {
-	        HttpEntity entity = response.getEntity();
-	        InputStream content = entity.getContent();
-	        BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-	        String line;
-	        Log.i(today.class.toString(),"Here inside the status code");
-	        while ((line = reader.readLine()) != null) {
-	          builder.append(line);
-	        }
-	      } else {
-	        Log.e(today.class.toString(), "Failed to download file");
-	      }
-	    } catch (ClientProtocolException e) {
-	      e.printStackTrace();
-	    } catch (IOException e) {
-	      e.printStackTrace();
-	    }
-	    Log.i(today.class.toString(),"Returning string");
-	    return builder.toString();
+		switch(v.getId()){
+		case R.id.Button01:
+			//DO something
+			System.out.println("months");
+			String url="http://www.google.com";
+			
+//			System.out.println(month.toLowerCase());
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
+			break;
+		case R.id.Button02:
+			//DO something
+			System.out.println("todays");
+			System.out.println("this is the day"+date[no]);
+			System.out.println("this is the message");
+			System.out.println(feed[no]);
+			Intent todaysI=new Intent();
+			todaysI.setClass(today.this,TodayDisplay.class);
+			todaysI.putExtra("excerpt", feed[no]);
+			todaysI.putExtra("date", date[no]);
+			startActivity(todaysI);
+			break;
+		case R.id.bt1:
+			//DO something
+			System.out.println("request");
+			break;
+		}
 	}
 }

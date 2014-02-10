@@ -44,6 +44,7 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:visibility="invisible"
         android:text="@string/go" />
 
     <TextView
@@ -65,7 +66,6 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:visibility="invisible"
         android:text="@string/prev" />
 
     <TextView
