@@ -98,6 +98,9 @@ public class today extends Activity implements OnClickListener{
 		case R.id.bt1:
 			//DO something
 			System.out.println("request");
+			Intent requestI=new Intent();
+			requestI.setClass(today.this,RequestActivity.class);
+			startActivity(requestI);
 			break;
 		}
 	}
