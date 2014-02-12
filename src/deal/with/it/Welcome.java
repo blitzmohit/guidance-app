@@ -16,29 +16,47 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 public class Welcome extends Activity{
 
 	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[4],dates[]=new String[4];
 	String[] slugs=new String[4],titles=new String[4];
+	TextView error_message;
 	@Override
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		setContentView(R.layout.home);
+		error_message=(TextView)findViewById(R.id.textView1);
+//		init();
+//		finish();
 		new PrefetchData().execute();
 	}
-
-	private class PrefetchData extends AsyncTask<Void, Void, Void> {
+private void init(){
+	AlertDialog alert=new AlertDialog.Builder(this)
+    .setTitle("Error")
+    .setMessage("Could not connect to website, kindly check internet connectivity and try again")
+    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) { 
+            // continue with delete
+        	finish();
+        }
+     })
+     .show();
+}
+	private class PrefetchData extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 		@Override
-		protected Void doInBackground(Void... arg0) {
+		protected Boolean doInBackground(Void... arg0) {
 			readTwitterFeed = readTwitterFeed();
 			try{
 				JSONObject jsonObject = new JSONObject(readTwitterFeed);
@@ -56,9 +74,10 @@ public class Welcome extends Activity{
 				readTwitterFeed=null;
 				postdate[0]=null;
 				e.printStackTrace();
+				return false;
 			}
 			Log.i("deal.with.it",readTwitterFeed);
-			return null;    
+			return true;    
 
 		}
 		private String readTwitterFeed() {
@@ -83,16 +102,24 @@ public class Welcome extends Activity{
 					Log.e(today.class.toString(), "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+//					error_message.setVisibility(0);
+//				init();
+				Log.e(today.class.toString(), "ClientProtocolException");
+					
 			} catch (IOException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+//				init();
+//					error_message.setVisibility(0);
+				Log.e(today.class.toString(), "IOException");
 			}
 			Log.i(today.class.toString(),"Returning string");
 			return builder.toString();
 		}
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
+			 if (result) {
 			Intent lIntent = new Intent();
 			lIntent.setClass(Welcome.this, today.class);
 			lIntent.putExtra("feed",excerpts);
@@ -100,6 +127,10 @@ public class Welcome extends Activity{
 			startActivity(lIntent);
 			Log.i("deal.with.it","Done");
 			finish();
+			 }
+			 else{
+				 init();
+			 }
 
 		}
 	}

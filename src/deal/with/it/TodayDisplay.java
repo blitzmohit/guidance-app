@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,7 +28,9 @@ public class TodayDisplay extends Activity implements OnClickListener{
 		today=(TextView)findViewById(R.id.textView1);
 		read_button=(Button)findViewById(R.id.button1);
 		String part[]=excerpt.split("<a href=\"");
+		today.setMovementMethod(new ScrollingMovementMethod().getInstance());
 		today.setText(part[0].replace("<br />", ""));
+//		today.setText("anything");
 		url=part[1].split("\">Read more...")[0];
 		System.out.println(url);
 		read_button.setOnClickListener((OnClickListener) this);

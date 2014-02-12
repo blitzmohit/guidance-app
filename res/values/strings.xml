@@ -14,5 +14,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="read_more">Read more</string>
     <string name="title_activity_request">RequestActivity</string>
-
+    <string name="network_error">Kindly check your internet connection.</string>
+    
 </resources>
