@@ -2,14 +2,6 @@
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
  <LinearLayout
      android:id="@+id/linear_lay1"
         android:layout_width="fill_parent"
@@ -25,13 +17,6 @@
         android:paddingTop="20dp"
         android:paddingLeft="30dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </LinearLayout>
  <Button
         android:id="@+id/button1"

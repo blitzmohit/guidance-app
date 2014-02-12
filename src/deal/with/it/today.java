@@ -74,11 +74,8 @@ public class today extends Activity implements OnClickListener{
 	public void onClick(View v){  
 		switch(v.getId()){
 		case R.id.Button01:
-			//DO something
 			System.out.println("months");
 			String url="http://www.google.com";
-			
-//			System.out.println(month.toLowerCase());
 			Intent i = new Intent(Intent.ACTION_VIEW);
 			i.setData(Uri.parse(url));
 			startActivity(i);

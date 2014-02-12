@@ -39,7 +39,7 @@ public class Welcome extends Activity{
 		new PrefetchData().execute();
 	}
 private void init(){
-	AlertDialog alert=new AlertDialog.Builder(this)
+	new AlertDialog.Builder(this)
     .setTitle("Error")
     .setMessage("Could not connect to website, kindly check internet connectivity and try again")
     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

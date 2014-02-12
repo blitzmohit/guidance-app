@@ -25,6 +25,7 @@ public class TodayDisplay extends Activity implements OnClickListener{
 	}
 	private void initLayout(){
 		setContentView(R.layout.activity_today_display);
+		//@TO-DO add textview for showing date of Guidance
 		today=(TextView)findViewById(R.id.textView1);
 		read_button=(Button)findViewById(R.id.button1);
 		String part[]=excerpt.split("<a href=\"");
