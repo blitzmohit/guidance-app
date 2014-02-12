@@ -29,7 +29,6 @@ public class RequestActivity extends Activity implements OnClickListener {
 	}
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
 	            "mailto","lotusmeditationgroup@gmail.com", null));
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request for Personalized Guidance");

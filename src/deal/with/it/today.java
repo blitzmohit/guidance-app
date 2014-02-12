@@ -21,7 +21,7 @@ public class today extends Activity implements OnClickListener{
 	private TextView tv1;
 	private Button bt1,bt2,bt3;
 	static String[] jsoncat={"status","count","count_total","pages","posts"};
-	private String feed[]=new String[4],date[]=new String[4];
+	private String feed[]=new String[2],date[]=new String[2];
 	private int no;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class today extends Activity implements OnClickListener{
 		String month= month_date.format(cal.getTime());
 		System.out.println(month);
 //		String formattedDate="abc";
-		for(int i=0;i<4;i++){
+		for(int i=0;i<2;i++){
 
 			if(Pattern.compile(Pattern.quote(month.split("-")[0]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find() && Pattern.compile(Pattern.quote(month.split("-")[1]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find())
 			{

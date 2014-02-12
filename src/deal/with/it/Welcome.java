@@ -26,8 +26,8 @@ import android.widget.TextView;
 
 public class Welcome extends Activity{
 
-	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[4],dates[]=new String[4];
-	String[] slugs=new String[4],titles=new String[4];
+	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[2],dates[]=new String[2];
+	String[] slugs=new String[2],titles=new String[2];
 	TextView error_message;
 	@Override
 	public void onCreate(Bundle bundle){
@@ -61,7 +61,7 @@ private void init(){
 			try{
 				JSONObject jsonObject = new JSONObject(readTwitterFeed);
 				JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
-				for(int j=0;j<4;j++){
+				for(int j=0;j<2;j++){
 					JSONObject x=posts.getJSONObject(j);
 					excerpts[j]=x.getString("excerpt").split("<div class=\"sharedaddy")[0].split("</div><br/><p>")[1];
 					dates[j]=x.getString("date").split(" ")[0];
@@ -84,7 +84,7 @@ private void init(){
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
 			Log.i("deal.with.it","Read twitter feed");
-			HttpGet httpGet = new HttpGet("http://lotusmeditationgroup.com/?cat=4&json=1");
+			HttpGet httpGet = new HttpGet("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
 			try {
 				HttpResponse response = client.execute(httpGet);
 				StatusLine statusLine = response.getStatusLine();
