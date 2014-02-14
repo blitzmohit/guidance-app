@@ -27,14 +27,15 @@ public class today extends Activity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
-		feed= extras.getStringArray("feed");
-		date= extras.getStringArray("date");
+		feed=extras.getStringArray("feed");
+		date=extras.getStringArray("date");
 		Log.i("deal.with.it","----");
 		//    Log.i("deal.with.it",feed);
 		//    Log.i("deal.with.it",date);
 		Log.i("deal.with.it","----");
 		initLayout();
 	}
+
 	private void initLayout(){
 		setContentView(R.layout.today);
 		Log.i("deal.with.it","Done again");
