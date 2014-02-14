@@ -48,25 +48,22 @@ public class today extends Activity implements OnClickListener{
 		bt2.setOnClickListener((OnClickListener) this);	
 		bt3.setOnClickListener((OnClickListener) this);	
 		Calendar cal=Calendar.getInstance();
-		SimpleDateFormat month_date = new SimpleDateFormat("MMMM-dd",Locale.US);
-		String month= month_date.format(cal.getTime());
-		System.out.println(month);
-//		String formattedDate="abc";
+		SimpleDateFormat sample_date = new SimpleDateFormat("dd MMMM",Locale.US);
+		String new_date=sample_date.format(cal.getTime());
 		for(int i=0;i<2;i++){
-
-			if(Pattern.compile(Pattern.quote(month.split("-")[0]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find() && Pattern.compile(Pattern.quote(month.split("-")[1]), Pattern.CASE_INSENSITIVE).matcher(date[i]).find())
+			if(Pattern.compile(Pattern.quote(new_date), Pattern.CASE_INSENSITIVE).matcher(date[i]).find())
 			{
 				Log.i("deal.with.it","date was equal");
-				//				excerpt=feed[i];
+				Log.i("deal.with.it",date[i]);
 				no=i;
 				bt2.setVisibility(0);
+				tv1.setVisibility(4);
 				Log.i("deal.with.it",feed[i]);
 				break;
 			}
 			else
 			{
 				Log.i("deal.with.it","date was not equal");
-				//				bt1.setVisibility(4);
 				tv1.setVisibility(0);
 			}
 		}
