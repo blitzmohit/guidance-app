@@ -27,7 +27,7 @@ import android.widget.TextView;
 public class Welcome extends Activity{
 
 	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[2],dates[]=new String[2];
-	String[] slugs=new String[2],titles=new String[2];
+	String[] slugs=new String[2],titles=new String[2],content=new String[2];
 	TextView error_message;
 	@Override
 	public void onCreate(Bundle bundle){
@@ -38,7 +38,7 @@ public class Welcome extends Activity{
 //		finish();
 		new PrefetchData().execute();
 	}
-private void init(){
+ private void init(){
 	new AlertDialog.Builder(this)
     .setTitle("Error")
     .setMessage("Could not connect to website, kindly check internet connectivity and try again")
@@ -67,6 +67,7 @@ private void init(){
 					dates[j]=x.getString("date").split(" ")[0];
 					slugs[j]=x.getString("slug");
 					titles[j]=x.getString("title_plain");
+					content[j]=x.getString("content");
 					System.out.println(slugs[j]);
 				}
 			}
@@ -122,7 +123,7 @@ private void init(){
 			 if (result) {
 			Intent lIntent = new Intent();
 			lIntent.setClass(Welcome.this, today.class);
-			lIntent.putExtra("feed",excerpts);
+			lIntent.putExtra("feed",content);
 			lIntent.putExtra("date", titles);
 			startActivity(lIntent);
 			Log.i("deal.with.it","Done");
