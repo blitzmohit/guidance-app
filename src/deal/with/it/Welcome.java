@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class Welcome extends Activity{
@@ -29,13 +31,13 @@ public class Welcome extends Activity{
 	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[2],dates[]=new String[2];
 	String[] slugs=new String[2],titles=new String[2],content=new String[2];
 	TextView error_message;
+	ProgressBar mProgress;
 	@Override
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		setContentView(R.layout.home);
 		error_message=(TextView)findViewById(R.id.textView1);
-//		init();
-//		finish();
+		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 		new PrefetchData().execute();
 	}
  private void init(){
@@ -50,13 +52,14 @@ public class Welcome extends Activity{
      })
      .show();
 }
-	private class PrefetchData extends AsyncTask<Void, Void, Boolean> {
+	private class PrefetchData extends AsyncTask<Void, Boolean, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
+			publishProgress(true);
 			readTwitterFeed = readTwitterFeed();
 			try{
 				JSONObject jsonObject = new JSONObject(readTwitterFeed);
@@ -81,6 +84,15 @@ public class Welcome extends Activity{
 			return true;    
 
 		}
+		 protected void onProgressUpdate(boolean val) {
+	            // setting progress percentage
+	            if(val){
+	            	mProgress.setVisibility(View.VISIBLE);
+	            }
+	            else{
+	            	mProgress.setVisibility(View.INVISIBLE);
+	            }
+	       }
 		private String readTwitterFeed() {
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
@@ -98,20 +110,15 @@ public class Welcome extends Activity{
 					Log.i(today.class.toString(),"Here inside the status code");
 					while ((line = reader.readLine()) != null) {
 						builder.append(line);
+						
 					}
 				} else {
 					Log.e(today.class.toString(), "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
-//				e.printStackTrace();
-//					error_message.setVisibility(0);
-//				init();
 				Log.e(today.class.toString(), "ClientProtocolException");
 					
 			} catch (IOException e) {
-//				e.printStackTrace();
-//				init();
-//					error_message.setVisibility(0);
 				Log.e(today.class.toString(), "IOException");
 			}
 			Log.i(today.class.toString(),"Returning string");
@@ -120,6 +127,7 @@ public class Welcome extends Activity{
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
+			publishProgress(false);
 			 if (result) {
 			Intent lIntent = new Intent();
 			lIntent.setClass(Welcome.this, today.class);
