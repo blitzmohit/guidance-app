@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 public class Welcome extends Activity{
 
-	String readTwitterFeed, postdate[]=new String[2],excerpts[]=new String[2],dates[]=new String[2];
+	String readTwitterFeed, postdate[]=new String[2],month_titles[]=new String[2],month_content[]=new String[2], monthFeed;
 	String[] slugs=new String[2],titles=new String[2],content=new String[2];
 	TextView error_message;
 	ProgressBar mProgress;
@@ -60,18 +60,15 @@ public class Welcome extends Activity{
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			publishProgress(true);
-			readTwitterFeed = readTwitterFeed();
+			readTwitterFeed = readTwitterFeed("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
 			try{
 				JSONObject jsonObject = new JSONObject(readTwitterFeed);
 				JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
 				for(int j=0;j<2;j++){
 					JSONObject x=posts.getJSONObject(j);
-					excerpts[j]=x.getString("excerpt").split("<div class=\"sharedaddy")[0].split("</div><br/><p>")[1];
-					dates[j]=x.getString("date").split(" ")[0];
-					slugs[j]=x.getString("slug");
 					titles[j]=x.getString("title_plain");
 					content[j]=x.getString("content");
-					System.out.println(slugs[j]);
+//					System.out.println(slugs[j]);
 				}
 			}
 			catch(Exception e){
@@ -81,8 +78,23 @@ public class Welcome extends Activity{
 				return false;
 			}
 			Log.i("deal.with.it",readTwitterFeed);
-			return true;    
-
+			monthFeed= readTwitterFeed("http://lotusmeditationgroup.com/?cat=14&count=2&json=1");
+			try{
+				JSONObject jsonObject = new JSONObject(monthFeed);
+				JSONArray posts_y =(JSONArray)jsonObject.getJSONArray("posts");
+//				JSONObject y=posts_y.getJSONObject(0);
+				for(int j=0;j<2 && j<posts_y.length();j++){
+					JSONObject y=posts_y.getJSONObject(j);
+					month_titles[j]=y.getString("title_plain");
+					month_content[j]=y.getString("content");
+//					System.out.println("exception");
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				return false;
+			}
+			return true;
 		}
 		 protected void onProgressUpdate(boolean val) {
 	            // setting progress percentage
@@ -93,11 +105,11 @@ public class Welcome extends Activity{
 	            	mProgress.setVisibility(View.INVISIBLE);
 	            }
 	       }
-		private String readTwitterFeed() {
+		private String readTwitterFeed(String url) {
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
 			Log.i("deal.with.it","Read twitter feed");
-			HttpGet httpGet = new HttpGet("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
+			HttpGet httpGet = new HttpGet(url);
 			try {
 				HttpResponse response = client.execute(httpGet);
 				StatusLine statusLine = response.getStatusLine();
@@ -133,6 +145,10 @@ public class Welcome extends Activity{
 			lIntent.setClass(Welcome.this, today.class);
 			lIntent.putExtra("feed",content);
 			lIntent.putExtra("date", titles);
+			lIntent.putExtra("month_feed",month_content);
+			lIntent.putExtra("month_titles", month_titles);
+//			System.out.println(month_content[0]);
+//			System.out.println(month_titles[0]);
 			startActivity(lIntent);
 			Log.i("deal.with.it","Done");
 			finish();

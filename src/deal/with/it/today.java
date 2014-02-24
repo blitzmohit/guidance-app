@@ -5,10 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,17 +19,16 @@ public class today extends Activity implements OnClickListener{
 	private TextView tv1;
 	private Button bt1,bt2,bt3;
 	static String[] jsoncat={"status","count","count_total","pages","posts"};
-	private String feed[]=new String[2],date[]=new String[2];
-	private int no;
+	private String feed[]=new String[2],date[]=new String[2],recv_month_content[]=new String[2], recv_month_titles[]=new String[2];
+	private int no,month_no;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
 		feed=extras.getStringArray("feed");
 		date=extras.getStringArray("date");
-		Log.i("deal.with.it","----");
-		//    Log.i("deal.with.it",feed);
-		//    Log.i("deal.with.it",date);
+		recv_month_content=extras.getStringArray("month_feed");
+		recv_month_titles=extras.getStringArray("month_titles");
 		Log.i("deal.with.it","----");
 		initLayout();
 	}
@@ -50,6 +47,7 @@ public class today extends Activity implements OnClickListener{
 		Calendar cal=Calendar.getInstance();
 		SimpleDateFormat sample_date = new SimpleDateFormat("dd MMMM",Locale.US);
 		String new_date=sample_date.format(cal.getTime());
+		String[] month_date=new_date.split(" ");
 		for(int i=0;i<2;i++){
 			if(Pattern.compile(Pattern.quote(new_date), Pattern.CASE_INSENSITIVE).matcher(date[i]).find())
 			{
@@ -67,19 +65,31 @@ public class today extends Activity implements OnClickListener{
 				tv1.setVisibility(0);
 			}
 		}
+		for(int i=0;i<2;i++){
+			if(Pattern.compile(Pattern.quote(month_date[1]), Pattern.CASE_INSENSITIVE).matcher(recv_month_titles[i]).find())
+			{
+				Log.i("deal.with.it","month was equal");
+				month_no=i;
+				break;
+			}
+			else
+			{
+				Log.i("deal.with.it","month was not equal");
+			}
+		}
 	}
 	@Override
 	public void onClick(View v){  
 		switch(v.getId()){
 		case R.id.Button01:
 			System.out.println("months");
-			String url="http://www.google.com";
-			Intent i = new Intent(Intent.ACTION_VIEW);
-			i.setData(Uri.parse(url));
-			startActivity(i);
+			Intent todaysII=new Intent();
+			todaysII.setClass(today.this,TodayDisplay.class);
+			todaysII.putExtra("excerpt", recv_month_content[month_no]);
+			todaysII.putExtra("date", recv_month_titles[month_no]);
+			startActivity(todaysII);
 			break;
 		case R.id.Button02:
-			//DO something
 			System.out.println("todays");
 			System.out.println("this is the day"+date[no]);
 			System.out.println("this is the message");
