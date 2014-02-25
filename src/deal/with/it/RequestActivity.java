@@ -30,7 +30,7 @@ public class RequestActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-	            "mailto","lotusmeditationgroup@gmail.com", null));
+	            "mailto","support@lotusmeditationgroup.com", null));
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request for Personalized Guidance");
 	emailIntent.putExtra(Intent.EXTRA_TEXT, "Please send me the details on personalized guidance service."+"\n"+msg.getText()+"\n"+name.getText());
 	startActivity(Intent.createChooser(emailIntent, "Send email..."));
