@@ -1,4 +1,4 @@
-package deal.with.it;
+package org.geek90.guidance;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import org.geek90.guidance.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

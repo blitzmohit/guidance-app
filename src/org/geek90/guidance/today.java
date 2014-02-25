@@ -1,10 +1,12 @@
-package deal.with.it;
+package org.geek90.guidance;
 
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import org.geek90.guidance.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

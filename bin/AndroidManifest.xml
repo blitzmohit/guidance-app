@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="deal.with.it"
+    package="org.geek90.guidance"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -10,32 +10,51 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+ 
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+     <!-- Creates a custom permission so only this app can receive its messages. -->
+    <permission
+        android:name="deal.with.it.pushnotifications.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+ 
+    <uses-permission android:name="com.androidhive.pushnotifications.permission.C2D_MESSAGE" />
+ 
+    <!-- This app has permission to register and receive data message. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+ 
+    <!-- Network State Permissions to detect Internet status -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ 
+    <!-- Permission to vibrate -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/lmg_logo_320"
         android:label="@string/app_name"
         android:logo="@drawable/lmg_logo_320"
         android:theme="@style/AppTheme" >
-        <activity android:name="deal.with.it.Welcome" >
+        <activity android:name="org.geek90.guidance.Welcome" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="deal.with.it.today" >
+        <activity android:name="org.geek90.guidance.today" >
         </activity>
         <activity
-            android:name="deal.with.it.TodayDisplay"
+            android:name="org.geek90.guidance.TodayDisplay"
             android:label="@string/title_activity_today_display"
-            android:parentActivityName="deal.with.it.today" >
+            android:parentActivityName="org.geek90.guidance.today" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="deal.with.it.today" />
         </activity>
         <activity
-            android:name="deal.with.it.RequestActivity"
+            android:name="org.geek90.guidance.RequestActivity"
             android:label="@string/title_activity_request" >
         </activity>
     </application>

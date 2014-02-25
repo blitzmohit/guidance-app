@@ -1,5 +1,6 @@
-package deal.with.it;
+package org.geek90.guidance;
 
+import org.geek90.guidance.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
