@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Reiki Guidance</string>
-    <string name="welcome">Welcome to the Reiki Guidance</string>
+    <string name="app_name">LMG Guidance</string>
+    <string name="welcome">Welcome to the LMG Guidance</string>
     <string name="logo">Logo</string>
     <string name="go">Today\'s Guidance</string>
     <string name="prev">Monthly Guidance</string>
