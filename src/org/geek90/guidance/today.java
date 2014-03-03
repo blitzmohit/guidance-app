@@ -93,6 +93,7 @@ public class today extends Activity implements OnClickListener{
 			todaysII.setClass(today.this,TodayDisplay.class);
 			todaysII.putExtra("excerpt", recv_month_content[month_no]);
 			todaysII.putExtra("date", recv_month_titles[month_no]);
+			todaysII.putExtra("title", "month");
 			startActivity(todaysII);
 			break;
 		case R.id.Button02:
@@ -104,6 +105,7 @@ public class today extends Activity implements OnClickListener{
 			todaysI.setClass(today.this,TodayDisplay.class);
 			todaysI.putExtra("excerpt", feed[no]);
 			todaysI.putExtra("date", date[no]);
+			todaysI.putExtra("title", "daily");
 			startActivity(todaysI);
 			break;
 		case R.id.bt1:
