@@ -49,7 +49,7 @@ public class Welcome extends Activity{
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	final String SENDER_ID = "145463378681";
-	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+//	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	final String TAG = "org.geek90.guidance";
 	GoogleCloudMessaging gcm;
 	TextView mDisplay;
@@ -86,6 +86,7 @@ public class Welcome extends Activity{
 		.show();
 	}
 	private boolean checkPlayServices() {
+		try{			
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 		if (resultCode != ConnectionResult.SUCCESS) {
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -99,6 +100,10 @@ public class Welcome extends Activity{
 			return false;
 		}
 		return true;
+		}
+		catch(Exception e){
+			return false;
+		}
 	}
 	private static int getAppVersion(Context context) {
 	    try {
