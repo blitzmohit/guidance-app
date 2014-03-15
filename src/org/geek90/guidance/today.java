@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.geek90.guidance.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 
 public class today extends Activity implements OnClickListener{
-	private TextView tv1;
+	private TextView tv1,tv3;
 	private Button bt1,bt2,bt3;
 	static String[] jsoncat={"status","count","count_total","pages","posts"};
 	private String feed[]=new String[2],date[]=new String[2],recv_month_content[]=new String[2], recv_month_titles[]=new String[2];
@@ -40,6 +43,7 @@ public class today extends Activity implements OnClickListener{
 		Log.i("deal.with.it","Done again");
 		bt1 =(Button)findViewById(R.id.Button01);
 		tv1=(TextView)findViewById(R.id.TextView02);
+		tv3=(TextView)findViewById(R.id.TextView03);
 		bt1.setOnClickListener((OnClickListener) this);	
 		bt2=(Button)findViewById(R.id.Button02);
 		bt3=(Button)findViewById(R.id.bt1);
@@ -68,7 +72,11 @@ public class today extends Activity implements OnClickListener{
 			{
 				Log.i("deal.with.it","date was not equal");
 				Log.i("deal.with.it",new_date);
+				LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			    llp.setMargins(50, 0, 0, 0); // llp.setMargins(left, top, right, bottom);
+			    tv1.setLayoutParams(llp);
 				tv1.setVisibility(0);
+				bt2.setVisibility(View.GONE);
 			}
 		}
 		for(int i=0;i<2;i++){
