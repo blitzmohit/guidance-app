@@ -1,7 +1,6 @@
 package org.geek90.guidance;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,24 +29,29 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class Welcome extends Activity{
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
-
-	String SENDER_ID = "145463378681";
-
-	static final String TAG = "GCMDemo";
+	private static final String PROPERTY_APP_VERSION = "appVersion";
+	final String SENDER_ID = "145463378681";
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	final String TAG = "org.geek90.guidance";
 	GoogleCloudMessaging gcm;
-
 	TextView mDisplay;
 	Context context;
 	String regid;
@@ -55,13 +59,16 @@ public class Welcome extends Activity{
 	String[] slugs=new String[2],titles=new String[2],content=new String[2];
 	TextView error_message;
 	ProgressBar mProgress;
+	Boolean flag=true;
 	@Override
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		setContentView(R.layout.home);
-		context = getApplicationContext();
-		//		mDisplay.append("abc");
-		gcm = GoogleCloudMessaging.getInstance(this);
+		flag=checkPlayServices();
+		if(flag){		
+			context = getApplicationContext();
+			gcm = GoogleCloudMessaging.getInstance(this);
+		}
 		error_message=(TextView)findViewById(R.id.textView1);
 		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 		new PrefetchData().execute();
@@ -78,32 +85,44 @@ public class Welcome extends Activity{
 		})
 		.show();
 	}
+	private boolean checkPlayServices() {
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			} else {
+				Log.i(TAG, "This device is not supported.");
+				finish();
+			}
+			return false;
+		}
+		return true;
+	}
+	private static int getAppVersion(Context context) {
+	    try {
+	        PackageInfo packageInfo = context.getPackageManager()
+	                .getPackageInfo(context.getPackageName(), 0);
+	        return packageInfo.versionCode;
+	    } catch (NameNotFoundException e) {
+	        // should never happen
+	        throw new RuntimeException("Could not get package name: " + e);
+	    }
+	}
+	
 	private class PrefetchData extends AsyncTask<Void, Boolean, Boolean> {
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
-			File file = new File("/data/data/org.geek90.guidance/files/Lmgguidance");
-			if(!file.exists()){
-				String msg = "";
-				try {
-					if (gcm == null) {
-						gcm = GoogleCloudMessaging.getInstance(context);
-					}
-					regid = gcm.register(SENDER_ID);
-					msg = "Dvice registered, registration ID=" + regid;
-					Log.d("111", msg);
-					sendRegistrationIdToBackend(regid);
-
-				} catch (IOException ex) {
-					msg = "Error :" + ex.getMessage();
-				}
-				System.out.println("File not found");
-			}
-			else{
-				Log.e("111","file found, not registering again");
+			if(flag){
+				 regid = getRegistrationId(context);
+		            if (TextUtils.isEmpty(regid)) {
+		                registerInBackground();
+		            }
 			}
 			publishProgress(true);
 			readTwitterFeed = readTwitterFeed("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
@@ -140,6 +159,35 @@ public class Welcome extends Activity{
 				return false;
 			}
 			return true;
+		}
+		
+		private void registerInBackground() {
+			String msg = "";
+			try {
+                if (gcm == null) {
+                    gcm = GoogleCloudMessaging.getInstance(context);
+                }
+                regid = gcm.register(SENDER_ID);
+                msg = "Device registered, registration ID=" + regid;
+                sendRegistrationIdToBackend(regid);
+                storeRegistrationId(context, regid);
+            } catch (IOException ex) {
+                msg = "Error :" + ex.getMessage();
+                // If there is an error, don't just keep trying to register.
+                // Require the user to click a button again, or perform
+                // exponential back-off.
+            }
+            Log.e(TAG,msg);
+//            return msg;
+		}
+		private void storeRegistrationId(Context context, String regId) {
+		    final SharedPreferences prefs = getGCMPreferences(context);
+		    int appVersion = getAppVersion(context);
+		    Log.i(TAG, "Saving regId on app version " + appVersion);
+		    SharedPreferences.Editor editor = prefs.edit();
+		    editor.putString(PROPERTY_REG_ID, regId);
+		    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+		    editor.commit();
 		}
 		protected void onProgressUpdate(boolean val) {
 			// setting progress percentage
@@ -203,6 +251,31 @@ public class Welcome extends Activity{
 			}
 
 		}
+		private String getRegistrationId(Context context) {
+		    final SharedPreferences prefs = getGCMPreferences(context);
+		    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+		    if (TextUtils.isEmpty(registrationId)) {
+		        Log.i(TAG, "Registration not found.");
+		        return "";
+		    }
+		    // Check if app was updated; if so, it must clear the registration ID
+		    // since the existing regID is not guaranteed to work with the new
+		    // app version.
+		    int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+		    int currentVersion = getAppVersion(context);
+		    if (registeredVersion != currentVersion) {
+		        Log.i(TAG, "App version changed.");
+		        return "";
+		    }
+		    return registrationId;
+		}
+		private SharedPreferences getGCMPreferences(Context context) {
+		    // This sample app persists the registration ID in shared preferences, but
+		    // how you store the regID in your app is up to you.
+		    return getSharedPreferences(Welcome.class.getSimpleName(),
+		            Context.MODE_PRIVATE);
+		}
+		
 		private void sendRegistrationIdToBackend(String regid) {
 			// this code will send registration id of a device to our own server.
 			String url = "http://www.geek90.net/lmg_php/getdevice.php";
@@ -250,6 +323,7 @@ public class Welcome extends Activity{
 			}         
 
 		}
+
 	}
 
 }
