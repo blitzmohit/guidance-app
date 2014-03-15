@@ -59,7 +59,7 @@ public class Welcome extends Activity{
 	String[] slugs=new String[2],titles=new String[2],content=new String[2];
 	TextView error_message;
 	ProgressBar mProgress;
-	Boolean flag=true;
+	Boolean flag=false;
 	@Override
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
@@ -89,8 +89,9 @@ public class Welcome extends Activity{
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 		if (resultCode != ConnectionResult.SUCCESS) {
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+//						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+				System.out.println("User can install Play services");
 			} else {
 				Log.i(TAG, "This device is not supported.");
 				finish();
