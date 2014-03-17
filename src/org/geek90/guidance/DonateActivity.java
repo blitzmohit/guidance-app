@@ -19,6 +19,7 @@ public class DonateActivity extends Activity {
 
 	private Button clickButton;
 	private Button buyButton;
+	private Button consumeButton;
 	static final String ITEM_SKU = "android.test.purchased";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class DonateActivity extends Activity {
 
 		buyButton = (Button)findViewById(R.id.buyButton);
 		clickButton = (Button)findViewById(R.id.clickButton);
+		consumeButton=(Button)findViewById(R.id.consumeButton);
 		clickButton.setEnabled(false);
 
 		String base64EncodedPublicKey = 
@@ -48,6 +50,8 @@ public class DonateActivity extends Activity {
 		});
 	} 
 	public void buyClick(View view) {
+//		consumeItem();
+		buyButton.setEnabled(false);
 		OnIabPurchaseFinishedListener mPurchaseFinishedListener = null;
 		mHelper.launchPurchaseFlow(this, ITEM_SKU, 10001,   
 				mPurchaseFinishedListener, "mypurchasetoken");
@@ -56,11 +60,16 @@ public class DonateActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, 
 			Intent data) 
 	{
+		Log.i(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
 		if (!mHelper.handleActivityResult(requestCode, 
 				resultCode, data)) {     
 			super.onActivityResult(requestCode, resultCode, data);
 		}
+		 else {
+		        Log.i(TAG, "onActivityResult handled by IABUtil.");
+		    }
 	}
+	
 	IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener 
 	= new IabHelper.OnIabPurchaseFinishedListener() {
 		public void onIabPurchaseFinished(IabResult result, 
@@ -68,6 +77,8 @@ public class DonateActivity extends Activity {
 		{
 			if (result.isFailure()) {
 				// Handle error
+				Log.e(TAG,"Failed OnIABPurchaseFinishedListener");
+				Log.e(TAG,result.getMessage());
 				return;
 			}      
 			else if (purchase.getSku().equals(ITEM_SKU)) {
@@ -85,14 +96,20 @@ public class DonateActivity extends Activity {
 	= new IabHelper.QueryInventoryFinishedListener() {
 		public void onQueryInventoryFinished(IabResult result,
 				Inventory inventory) {
-
+			int flag=0;
 
 			if (result.isFailure()) {
 				// Handle failure
+				Log.i(TAG,"QueryInventoryFinishedListener");
 			} else {
 				mHelper.consumeAsync(inventory.getPurchase(ITEM_SKU), 
 						mConsumeFinishedListener);
+				flag=1;
 			}
+			 if (inventory.hasPurchase(ITEM_SKU) && flag==0) {
+
+		            mHelper.consumeAsync(inventory.getPurchase(ITEM_SKU), mConsumeFinishedListener);
+		        }
 		}
 	};
 	IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
@@ -104,6 +121,7 @@ public class DonateActivity extends Activity {
 				clickButton.setEnabled(true);
 			} else {
 				// handle error
+				Log.i(TAG, "Failed onconsumefinished");
 			}
 		}
 	};

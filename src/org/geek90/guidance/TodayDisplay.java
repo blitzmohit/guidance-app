@@ -53,7 +53,7 @@ public class TodayDisplay extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		Log.i("org.geek90.guidance", "Onclick");
 		Intent donate=new Intent();
-		donate.setClass(TodayDisplay.this,InAppBillingActivity.class);
+		donate.setClass(TodayDisplay.this,DonateActivity.class);
 		startActivity(donate);
 	}
 }

@@ -54,7 +54,24 @@ public class Security {
      * @param signedData the signed JSON string (signed, not encrypted)
      * @param signature the signature for the data, signed with the private key
      */
-   /* public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
+    public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
+        if (signedData == null) {
+          Log.e(TAG, "data is null");
+          return false;
+      }
+
+      boolean verified = false;
+      if (!TextUtils.isEmpty(signature)) {
+          PublicKey key = Security.generatePublicKey(base64PublicKey);
+          verified = Security.verify(key, signedData, signature);
+          if (!verified) {
+              Log.w(TAG, "signature does not match data.");
+              return false;
+          }
+      }
+      return true;
+  }
+    /* public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
         if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
                 TextUtils.isEmpty(signature)) {
             Log.e(TAG, "Purchase verification failed: missing data.");
@@ -64,7 +81,7 @@ public class Security {
         PublicKey key = Security.generatePublicKey(base64PublicKey);
         return Security.verify(key, signedData, signature);
     }*/
-    public static boolean verifyPurchase(String base64PublicKey, 
+  /*  public static boolean verifyPurchase(String base64PublicKey, 
             String signedData, String signature) {
           if (TextUtils.isEmpty(signedData) || 
                   TextUtils.isEmpty(base64PublicKey) ||
@@ -79,7 +96,7 @@ public class Security {
           PublicKey key = Security.generatePublicKey(base64PublicKey);
           return Security.verify(key, signedData, signature);
       }
-
+*/
     /**
      * Generates a PublicKey instance from a string containing the
      * Base64-encoded public key.

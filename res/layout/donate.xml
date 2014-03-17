@@ -26,5 +26,14 @@
         android:layout_marginBottom="56dp"
         android:onClick="buttonClicked"
         android:text="@string/clickme_string" />
+    
+      <Button
+        android:id="@+id/consumeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="56dp"
+        android:onClick="consumeItem"
+        android:text="consume" />
 
 </RelativeLayout>
