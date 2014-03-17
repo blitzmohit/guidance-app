@@ -15,5 +15,9 @@
     <string name="read_more">Read more</string>
     <string name="title_activity_request">RequestActivity</string>
     <string name="network_error">Kindly check your internet connection.</string>
-    
+    <string name="buy_string">Buy</string>
+    <string name="clickme_string">Click me</string>
+    <string name="title_activity_donate">Donate to LMG</string>
+    <string name="title_activity_in_app_billing">InAppBillingActivity</string>
+
 </resources>

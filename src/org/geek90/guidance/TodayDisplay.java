@@ -1,13 +1,19 @@
 package org.geek90.guidance;
 
-import org.geek90.guidance.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.Button;
 
-public class TodayDisplay extends Activity{
+
+public class TodayDisplay extends Activity implements OnClickListener{
 	private String excerpt,date,html,title;
+	private Button donate;
 	private WebView today;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,8 @@ public class TodayDisplay extends Activity{
 	}
 	private void initLayout(){
 		setContentView(R.layout.activity_today_display);
+		donate=(Button)findViewById(R.id.button1);
+		donate.setOnClickListener((OnClickListener)this);
 		if(title.equals("daily")){
 			setTitle(R.string.go);
 		}
@@ -39,7 +47,13 @@ public class TodayDisplay extends Activity{
 	            onBackPressed();
 	            return true;
 	        }
-
 	    return super.onOptionsItemSelected(item);
+	}
+	@Override
+	public void onClick(View v) {
+		Log.i("org.geek90.guidance", "Onclick");
+		Intent donate=new Intent();
+		donate.setClass(TodayDisplay.this,InAppBillingActivity.class);
+		startActivity(donate);
 	}
 }
