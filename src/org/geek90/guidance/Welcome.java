@@ -175,8 +175,10 @@ public class Welcome extends Activity{
                 }
                 regid = gcm.register(SENDER_ID);
                 msg = "Device registered, registration ID=" + regid;
-                sendRegistrationIdToBackend(regid);
-                storeRegistrationId(context, regid);
+                boolean sendSuccess=sendRegistrationIdToBackend(regid);
+                if(sendSuccess==true){
+                	storeRegistrationId(context, regid);
+                }
             } catch (IOException ex) {
                 msg = "Error :" + ex.getMessage();
                 // If there is an error, don't just keep trying to register.
@@ -184,7 +186,6 @@ public class Welcome extends Activity{
                 // exponential back-off.
             }
             Log.e(TAG,msg);
-//            return msg;
 		}
 		private void storeRegistrationId(Context context, String regId) {
 		    final SharedPreferences prefs = getGCMPreferences(context);
@@ -276,13 +277,11 @@ public class Welcome extends Activity{
 		    return registrationId;
 		}
 		private SharedPreferences getGCMPreferences(Context context) {
-		    // This sample app persists the registration ID in shared preferences, but
-		    // how you store the regID in your app is up to you.
 		    return getSharedPreferences(Welcome.class.getSimpleName(),
 		            Context.MODE_PRIVATE);
 		}
 		
-		private void sendRegistrationIdToBackend(String regid) {
+		private boolean sendRegistrationIdToBackend(String regid) {
 			// this code will send registration id of a device to our own server.
 			String url = "http://www.geek90.net/lmg_php/getdevice.php";
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -292,8 +291,8 @@ public class Welcome extends Activity{
 			try {
 				httpPost.setEntity(new UrlEncodedFormEntity(params));
 			} catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				return false;
 			}
 
 			try {
@@ -305,27 +304,23 @@ public class Welcome extends Activity{
 					HttpEntity entity = httpResponse.getEntity();
 					if(entity != null) {
 						responseBody = EntityUtils.toString(entity);
-						String filename = "Lmgguidance";
-						FileOutputStream outputStream;
-
-						try {
-							outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-							outputStream.write(responseBody.getBytes());
-							outputStream.close();
-						} catch (Exception e) {
-							Log.e(TAG, "File write failed");
+						if(TextUtils.equals(responseBody,"successs")){
+							return true;
 						}
-
+						else{
+							return false;
+						}
 					}
 					break;
 				}
 				Log.i(TAG,responseBody);
+				return false;
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return false;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return false;
 			}         
 
 		}
