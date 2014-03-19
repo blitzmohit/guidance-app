@@ -1,7 +1,6 @@
 package org.geek90.guidance;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +23,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -49,7 +50,7 @@ public class Welcome extends Activity{
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	final String SENDER_ID = "145463378681";
-//	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	//	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	final String TAG = "org.geek90.guidance";
 	GoogleCloudMessaging gcm;
 	TextView mDisplay;
@@ -87,37 +88,37 @@ public class Welcome extends Activity{
 	}
 	private boolean checkPlayServices() {
 		try{			
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (resultCode != ConnectionResult.SUCCESS) {
-			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//						PLAY_SERVICES_RESOLUTION_REQUEST).show();
-				System.out.println("User can install Play services");
-			} else {
-				Log.i(TAG, "This device is not supported.");
-				finish();
+			int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+			if (resultCode != ConnectionResult.SUCCESS) {
+				if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+					//				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+					//						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+					System.out.println("User can install Play services");
+				} else {
+					Log.i(TAG, "This device is not supported.");
+					finish();
+				}
+				return false;
 			}
-			return false;
-		}
-		return true;
+			return true;
 		}
 		catch(Exception e){
 			return false;
 		}
 	}
 	private static int getAppVersion(Context context) {
-	    try {
-	        PackageInfo packageInfo = context.getPackageManager()
-	                .getPackageInfo(context.getPackageName(), 0);
-	        return packageInfo.versionCode;
-	    } catch (NameNotFoundException e) {
-	        // should never happen
-	        throw new RuntimeException("Could not get package name: " + e);
-	    }
+		try {
+			PackageInfo packageInfo = context.getPackageManager()
+					.getPackageInfo(context.getPackageName(), 0);
+			return packageInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// should never happen
+			throw new RuntimeException("Could not get package name: " + e);
+		}
 	}
-	
+
 	private class PrefetchData extends AsyncTask<Void, Boolean, Boolean> {
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -125,10 +126,10 @@ public class Welcome extends Activity{
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			if(flag){
-				 regid = getRegistrationId(context);
-		            if (TextUtils.isEmpty(regid)) {
-		                registerInBackground();
-		            }
+				regid = getRegistrationId(context);
+				if (TextUtils.isEmpty(regid)) {
+					registerInBackground();
+				}
 			}
 			publishProgress(true);
 			readTwitterFeed = readTwitterFeed("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
@@ -166,35 +167,35 @@ public class Welcome extends Activity{
 			}
 			return true;
 		}
-		
+
 		private void registerInBackground() {
 			String msg = "";
 			try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
-                }
-                regid = gcm.register(SENDER_ID);
-                msg = "Device registered, registration ID=" + regid;
-                boolean sendSuccess=sendRegistrationIdToBackend(regid);
-                if(sendSuccess==true){
-                	storeRegistrationId(context, regid);
-                }
-            } catch (IOException ex) {
-                msg = "Error :" + ex.getMessage();
-                // If there is an error, don't just keep trying to register.
-                // Require the user to click a button again, or perform
-                // exponential back-off.
-            }
-            Log.e(TAG,msg);
+				if (gcm == null) {
+					gcm = GoogleCloudMessaging.getInstance(context);
+				}
+				regid = gcm.register(SENDER_ID);
+				msg = "Device registered, registration ID=" + regid;
+				boolean sendSuccess=sendRegistrationIdToBackend(regid);
+				if(sendSuccess==true){
+					storeRegistrationId(context, regid);
+				}
+			} catch (IOException ex) {
+				msg = "Error :" + ex.getMessage();
+				// If there is an error, don't just keep trying to register.
+				// Require the user to click a button again, or perform
+				// exponential back-off.
+			}
+			Log.e(TAG,msg);
 		}
 		private void storeRegistrationId(Context context, String regId) {
-		    final SharedPreferences prefs = getGCMPreferences(context);
-		    int appVersion = getAppVersion(context);
-		    Log.i(TAG, "Saving regId on app version " + appVersion);
-		    SharedPreferences.Editor editor = prefs.edit();
-		    editor.putString(PROPERTY_REG_ID, regId);
-		    editor.putInt(PROPERTY_APP_VERSION, appVersion);
-		    editor.commit();
+			final SharedPreferences prefs = getGCMPreferences(context);
+			int appVersion = getAppVersion(context);
+			Log.i(TAG, "Saving regId on app version " + appVersion);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString(PROPERTY_REG_ID, regId);
+			editor.putInt(PROPERTY_APP_VERSION, appVersion);
+			editor.commit();
 		}
 		protected void onProgressUpdate(boolean val) {
 			// setting progress percentage
@@ -259,33 +260,34 @@ public class Welcome extends Activity{
 
 		}
 		private String getRegistrationId(Context context) {
-		    final SharedPreferences prefs = getGCMPreferences(context);
-		    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-		    if (TextUtils.isEmpty(registrationId)) {
-		        Log.i(TAG, "Registration not found.");
-		        return "";
-		    }
-		    // Check if app was updated; if so, it must clear the registration ID
-		    // since the existing regID is not guaranteed to work with the new
-		    // app version.
-		    int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-		    int currentVersion = getAppVersion(context);
-		    if (registeredVersion != currentVersion) {
-		        Log.i(TAG, "App version changed.");
-		        return "";
-		    }
-		    return registrationId;
+			final SharedPreferences prefs = getGCMPreferences(context);
+			String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+			if (TextUtils.isEmpty(registrationId)) {
+				Log.i(TAG, "Registration not found.");
+				return "";
+			}
+			// Check if app was updated; if so, it must clear the registration ID
+			// since the existing regID is not guaranteed to work with the new
+			// app version.
+			int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+			int currentVersion = getAppVersion(context);
+			if (registeredVersion != currentVersion) {
+				Log.i(TAG, "App version changed.");
+				return "";
+			}
+			return registrationId;
 		}
 		private SharedPreferences getGCMPreferences(Context context) {
-		    return getSharedPreferences(Welcome.class.getSimpleName(),
-		            Context.MODE_PRIVATE);
+			return getSharedPreferences(Welcome.class.getSimpleName(),
+					Context.MODE_PRIVATE);
 		}
-		
 		private boolean sendRegistrationIdToBackend(String regid) {
+			Log.i(TAG,regid);
 			// this code will send registration id of a device to our own server.
 			String url = "http://www.geek90.net/lmg_php/getdevice.php";
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("regid", regid));
+			params.add(new BasicNameValuePair("email", getGoogAccount()));
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(url);
 			try {
@@ -294,20 +296,21 @@ public class Welcome extends Activity{
 				e1.printStackTrace();
 				return false;
 			}
-
 			try {
 				HttpResponse httpResponse = httpClient.execute(httpPost);
-				String responseBody="abc";
+				String responseBody="news";
 				int responseCode = httpResponse.getStatusLine().getStatusCode();
 				switch(responseCode) {
 				case 200:
 					HttpEntity entity = httpResponse.getEntity();
 					if(entity != null) {
 						responseBody = EntityUtils.toString(entity);
-						if(TextUtils.equals(responseBody,"successs")){
+						if(responseBody.contains("successs")){
+							Log.i(TAG,"true");
 							return true;
 						}
 						else{
+							Log.i(TAG,responseBody);
 							return false;
 						}
 					}
@@ -322,7 +325,17 @@ public class Welcome extends Activity{
 				e.printStackTrace();
 				return false;
 			}         
-
+		}
+		private String getGoogAccount(){
+			AccountManager accountManager = AccountManager.get(getBaseContext()); 
+			Account[] accounts = accountManager.getAccountsByType("com.google");
+			Account account;
+			if (accounts.length > 0) {
+				account = accounts[0];      
+			} else {
+				return "null";
+			}
+			return account.name;
 		}
 
 	}
