@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LMG Guidance</string>
+    <string name="welcome">Welcome to the LMG Guidance</string>
+    <string name="logo">Logo</string>
+    <string name="go">Today\'s Guidance</string>
+    <string name="prev">Monthly Guidance</string>
+    <string name="today">Welcome here you will get today\'s notification</string>
+    <string name="personalied">Get Personalized Guidance</string>
+    <string name="NA">Today\'s Guidance has not been posted yet, kindly check out the monthly Guidance.</string>
+    <string name="title_activity_today_display">Today\'s Guidance</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="read_more">Read more</string>
+    <string name="title_activity_request">RequestActivity</string>
+    <string name="network_error">Kindly check your internet connection.</string>
+    
+</resources>
