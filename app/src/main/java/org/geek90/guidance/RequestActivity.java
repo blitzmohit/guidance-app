@@ -1,6 +1,5 @@
 package org.geek90.guidance;
 
-import org.geek90.guidance.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 
 
 public class RequestActivity extends Activity implements OnClickListener {
-	private Button button1;
 	private EditText name,msg;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +20,8 @@ public class RequestActivity extends Activity implements OnClickListener {
 		initLayout();
 	}
 	private void initLayout(){
-		button1=(Button)findViewById(R.id.button1);
-		button1.setOnClickListener((OnClickListener) this);
+		Button button1 = (Button) findViewById(R.id.button1);
+		button1.setOnClickListener(this);
 		name=(EditText)findViewById(R.id.editText1);
 		msg=(EditText)findViewById(R.id.editText2);
 		

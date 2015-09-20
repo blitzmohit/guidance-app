@@ -1,28 +1,5 @@
 package org.geek90.guidance;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -41,23 +18,49 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Welcome extends Activity{
 	private static final String EXTRA_MESSAGE = "message";
     private static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
-    private final String SENDER_ID = "145463378681";
     private final String TAG = "org.geek90.guidance";
     private GoogleCloudMessaging gcm;
     private TextView mDisplay;
     private Context context;
     private String regid;
-    private String readTwitterFeed, postdate[]=new String[2],month_titles[]=new String[2],month_content[]=new String[2], monthFeed;
-    private String[] slugs=new String[2],titles=new String[2],content=new String[2];
-    private TextView error_message;
+//    final private String[] postdate=new String[2];
+    private final String[] month_titles=new String[2];
+    private final String[] month_content=new String[2];
+    private String[] slugs=new String[2];
+    private final String[] titles=new String[2];
+    private final String[] content=new String[2];
     private ProgressBar mProgress;
     private Boolean flag=false;
 	@Override
@@ -69,9 +72,23 @@ public class Welcome extends Activity{
 			context = getApplicationContext();
 			gcm = GoogleCloudMessaging.getInstance(this);
 		}
-		error_message=(TextView)findViewById(R.id.textView1);
+        TextView error_message = (TextView) findViewById(R.id.textView1);
 		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 		new PrefetchData().execute();
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// Logs 'install' and 'app activate' App Events.
+		AppEventsLogger.activateApp(context);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+//		 Logs 'app deactivate' App Event.
+		AppEventsLogger.deactivateApp(context);
 	}
 	private void init(){
 		new AlertDialog.Builder(this)
@@ -128,10 +145,10 @@ public class Welcome extends Activity{
 				}
 			}
 			publishProgress(true);
-			readTwitterFeed = readTwitterFeed("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
+            String readTwitterFeed = readFeed("http://lotusmeditationgroup.com/?cat=4&count=2&json=1");
 			try{
 				JSONObject jsonObject = new JSONObject(readTwitterFeed);
-				JSONArray posts =(JSONArray)jsonObject.getJSONArray("posts");
+				JSONArray posts = jsonObject.getJSONArray("posts");
 				for(int j=0;j<2;j++){
 					JSONObject x=posts.getJSONObject(j);
 					titles[j]=x.getString("title_plain");
@@ -140,16 +157,16 @@ public class Welcome extends Activity{
 				}
 			}
 			catch(Exception e){
-				readTwitterFeed=null;
-				postdate[0]=null;
+				readTwitterFeed =null;
+//				postdate[0]=null;
 				e.printStackTrace();
 				return false;
 			}
-			Log.i("deal.with.it",readTwitterFeed);
-			monthFeed= readTwitterFeed("http://lotusmeditationgroup.com/?cat=14&count=2&json=1");
+			Log.i("deal.with.it", readTwitterFeed);
+            String monthFeed = readFeed("http://lotusmeditationgroup.com/?cat=14&count=2&json=1");
 			try{
 				JSONObject jsonObject = new JSONObject(monthFeed);
-				JSONArray posts_y =(JSONArray)jsonObject.getJSONArray("posts");
+				JSONArray posts_y = jsonObject.getJSONArray("posts");
 				//				JSONObject y=posts_y.getJSONObject(0);
 				for(int j=0;j<2 && j<posts_y.length();j++){
 					JSONObject y=posts_y.getJSONObject(j);
@@ -165,12 +182,13 @@ public class Welcome extends Activity{
 		}
 
 		private void registerInBackground() {
-			String msg = "";
+			String msg;
 			try {
 				if (gcm == null) {
 					gcm = GoogleCloudMessaging.getInstance(context);
 				}
-				regid = gcm.register(SENDER_ID);
+                String SENDER_ID = "145463378681";
+                regid = gcm.register(SENDER_ID);
 				msg = "Device registered, registration ID=" + regid;
 				boolean sendSuccess=sendRegistrationIdToBackend(regid);
 				if(sendSuccess){
@@ -185,7 +203,7 @@ public class Welcome extends Activity{
 			Log.e(TAG,msg);
 		}
 		private void storeRegistrationId(Context context, String regId) {
-			final SharedPreferences prefs = getGCMPreferences(context);
+			final SharedPreferences prefs = getGCMPreferences();
 			int appVersion = getAppVersion(context);
 			Log.i(TAG, "Saving regId on app version " + appVersion);
 			SharedPreferences.Editor editor = prefs.edit();
@@ -202,44 +220,50 @@ public class Welcome extends Activity{
 				mProgress.setVisibility(View.INVISIBLE);
 			}
 		}
-		private String readTwitterFeed(String url) {
+		private String readFeed(String url) {
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
-			Log.i("deal.with.it","Read twitter feed");
+			Log.i("deal.with.it","Read feed");
 			HttpGet httpGet = new HttpGet(url);
+            InputStream content=null;
 			try {
 				HttpResponse response = client.execute(httpGet);
 				StatusLine statusLine = response.getStatusLine();
 				int statusCode = statusLine.getStatusCode();
 				if (statusCode == 200) {
 					HttpEntity entity = response.getEntity();
-					InputStream content = entity.getContent();
+					content = entity.getContent();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 					String line;
-					Log.i(today.class.toString(),"Here inside the status code");
+					Log.i(MenuDisplay.class.toString(),"Here inside the status code");
 					while ((line = reader.readLine()) != null) {
 						builder.append(line);
-
 					}
 				} else {
-					Log.e(today.class.toString(), "Failed to download file");
+					Log.e(MenuDisplay.class.toString(), "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
-				Log.e(today.class.toString(), "ClientProtocolException");
+				Log.e(MenuDisplay.class.toString(), "ClientProtocolException");
 
 			} catch (IOException e) {
-				Log.e(today.class.toString(), "IOException");
-			}
-			Log.i(today.class.toString(),"Returning string");
+				Log.e(MenuDisplay.class.toString(), "IOException");
+			}finally {
+                try {
+                    content.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.i(MenuDisplay.class.toString(),"Returning string");
 			return builder.toString();
 		}
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
-			publishProgress(false);
+//			publishProgress(false);
 			if (result) {
 				Intent lIntent = new Intent();
-				lIntent.setClass(Welcome.this, today.class);
+				lIntent.setClass(Welcome.this, MenuDisplay.class);
 				lIntent.putExtra("feed",content);
 				lIntent.putExtra("date", titles);
 				lIntent.putExtra("month_feed",month_content);
@@ -256,7 +280,7 @@ public class Welcome extends Activity{
 
 		}
 		private String getRegistrationId(Context context) {
-			final SharedPreferences prefs = getGCMPreferences(context);
+			final SharedPreferences prefs = getGCMPreferences();
 			String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 			if (TextUtils.isEmpty(registrationId)) {
 				Log.i(TAG, "Registration not found.");
@@ -273,7 +297,7 @@ public class Welcome extends Activity{
 			}
 			return registrationId;
 		}
-		private SharedPreferences getGCMPreferences(Context context) {
+		private SharedPreferences getGCMPreferences() {
 			return getSharedPreferences(Welcome.class.getSimpleName(),
 					Context.MODE_PRIVATE);
 		}

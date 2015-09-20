@@ -1,13 +1,6 @@
 package org.geek90.guidance;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import org.geek90.guidance.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,16 +12,26 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.widget.LikeView;
 
-public class today extends Activity implements OnClickListener{
-	private TextView tv1,tv3;
-	private Button bt1,bt2,bt3;
-	static String[] jsoncat={"status","count","count_total","pages","posts"};
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+
+public class MenuDisplay extends Activity implements OnClickListener{
+    static String[] jsoncat={"status","count","count_total","pages","posts"};
 	private String feed[]=new String[2],date[]=new String[2],recv_month_content[]=new String[2], recv_month_titles[]=new String[2];
 	private int no,month_no;
+    private CallbackManager callbackManager;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 		Bundle extras = getIntent().getExtras();
 		feed=extras.getStringArray("feed");
 		date=extras.getStringArray("date");
@@ -38,17 +41,30 @@ public class today extends Activity implements OnClickListener{
 		initLayout();
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+	}
+
 	private void initLayout(){
 		setContentView(R.layout.today);
-		Log.i("deal.with.it","Done again");
-		bt1 =(Button)findViewById(R.id.Button01);
-		tv1=(TextView)findViewById(R.id.TextView02);
-		bt1.setOnClickListener((OnClickListener) this);	
-		bt2=(Button)findViewById(R.id.Button02);
-		bt3=(Button)findViewById(R.id.bt1);
-		bt1.setOnClickListener((OnClickListener) this);	
-		bt2.setOnClickListener((OnClickListener) this);	
-		bt3.setOnClickListener((OnClickListener) this);	
+		LikeView likeView = (LikeView) findViewById(R.id.likeView);
+		likeView.setLikeViewStyle(LikeView.Style.STANDARD);
+		likeView.setAuxiliaryViewPosition(LikeView.AuxiliaryViewPosition.INLINE);
+		likeView.setObjectIdAndType("https://www.facebook.com/lotusmeditationgroup",
+                LikeView.ObjectType.OPEN_GRAPH);
+		Log.i("deal.with.it", "Done again");
+//        likeView.
+        Button bt1 = (Button) findViewById(R.id.Button01);
+        TextView tv1 = (TextView) findViewById(R.id.TextView02);
+		bt1.setOnClickListener(this);
+        Button bt2 = (Button) findViewById(R.id.Button02);
+        Button bt3 = (Button) findViewById(R.id.bt1);
+		bt1.setOnClickListener(this);
+		bt2.setOnClickListener(this);
+		bt3.setOnClickListener(this);
 		Calendar cal=Calendar.getInstance();
 		SimpleDateFormat sample_date = new SimpleDateFormat("dd MMMM",Locale.US);
 		String new_date=sample_date.format(cal.getTime());
@@ -97,7 +113,7 @@ public class today extends Activity implements OnClickListener{
 		case R.id.Button01:
 			System.out.println("months");
 			Intent todaysII=new Intent();
-			todaysII.setClass(today.this,TodayDisplay.class);
+			todaysII.setClass(MenuDisplay.this,GuidanceDisplay.class);
 			todaysII.putExtra("excerpt", recv_month_content[month_no]);
 			todaysII.putExtra("date", recv_month_titles[month_no]);
 			todaysII.putExtra("title", "month");
@@ -109,7 +125,7 @@ public class today extends Activity implements OnClickListener{
 			System.out.println("this is the message");
 			System.out.println(feed[no]);
 			Intent todaysI=new Intent();
-			todaysI.setClass(today.this,TodayDisplay.class);
+			todaysI.setClass(MenuDisplay.this,GuidanceDisplay.class);
 			todaysI.putExtra("excerpt", feed[no]);
 			todaysI.putExtra("date", date[no]);
 			todaysI.putExtra("title", "daily");
@@ -119,7 +135,7 @@ public class today extends Activity implements OnClickListener{
 			//DO something
 			System.out.println("request");
 			Intent requestI=new Intent();
-			requestI.setClass(today.this,RequestActivity.class);
+			requestI.setClass(MenuDisplay.this,RequestActivity.class);
 			startActivity(requestI);
 			break;
 		}
