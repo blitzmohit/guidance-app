@@ -24,4 +24,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     //compile files('libs/c2dm.jar')
     compile 'com.google.android.gms:play-services:7.5.+'
+    compile 'com.intuit.sdp:sdp-android:1.0.2'
 }

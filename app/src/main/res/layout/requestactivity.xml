@@ -14,10 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/_25sdp"
         android:ems="10"
         android:inputType="text"
-        android:hint="Message" />
+        android:hint="Message"
+        android:singleLine="false" />
 
     <TextView
         android:id="@+id/textView1"
@@ -25,8 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="Please enter your information, we will contact you with the details" />
+        android:layout_marginTop="@dimen/_30sdp"
+        android:text="Please enter your information, we will contact you with the details"
+        android:textSize="@dimen/_18sdp" />
 
     <EditText
         android:id="@+id/editText1"
@@ -34,10 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editText2"
         android:layout_below="@+id/textView1"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/_25sdp"
         android:ems="10"
         android:hint="Name"
-        android:inputType="textPersonName" >
+        android:inputType="textPersonName"
+        android:singleLine="true">
 
         <requestFocus />
     </EditText>
@@ -48,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:text="Submit" />
 
 </RelativeLayout>

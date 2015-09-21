@@ -4,43 +4,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical" 
     >
-    <com.facebook.share.widget.LikeView
-        android:id="@+id/likeView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
     <TextView
         android:id="@+id/TextView02"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/NA"
         android:visibility="invisible"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="@dimen/_150sdp"
         android:layout_gravity="center" />
 
     <Button
         android:id="@+id/Button02"
-        android:layout_width="240dp"
+        android:layout_width="@dimen/_240sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         android:text="@string/go"
-        android:layout_marginTop="150dp" />
+        android:layout_marginTop="@dimen/_150sdp" />
 
     <Button
         android:id="@+id/Button01"
-        android:layout_width="240dp"
+        android:layout_width="@dimen/_240sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/prev"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="@dimen/_25sdp" />
 
     <Button
         android:id="@+id/bt1"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_240sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/personalized"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="@dimen/_25sdp" />
+
+    <com.facebook.share.widget.LikeView
+        android:id="@+id/likeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
  
 </LinearLayout>

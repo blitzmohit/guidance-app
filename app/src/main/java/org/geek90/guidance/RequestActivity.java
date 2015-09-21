@@ -15,7 +15,7 @@ public class RequestActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_request);
+		setContentView(R.layout.requestactivity);
 		
 		initLayout();
 	}

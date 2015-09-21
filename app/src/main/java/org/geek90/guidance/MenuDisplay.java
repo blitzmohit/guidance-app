@@ -49,7 +49,7 @@ public class MenuDisplay extends Activity implements OnClickListener{
 	}
 
 	private void initLayout(){
-		setContentView(R.layout.today);
+		setContentView(R.layout.menudisplay);
 		LikeView likeView = (LikeView) findViewById(R.id.likeView);
 		likeView.setLikeViewStyle(LikeView.Style.STANDARD);
 		likeView.setAuxiliaryViewPosition(LikeView.AuxiliaryViewPosition.INLINE);
@@ -78,7 +78,7 @@ public class MenuDisplay extends Activity implements OnClickListener{
 				Log.i("deal.with.it","date was equal");
 				Log.i("deal.with.it",date[i]);
 				no=i;
-				bt2.setVisibility(View.VISIBLE); // 0---
+				bt2.setVisibility(View.VISIBLE);
 				tv1.setVisibility(View.GONE);
 				Log.i("deal.with.it",feed[i]);
 				break;
